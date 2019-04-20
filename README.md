@@ -1,2 +1,4 @@
 # 過去を振り替えれるコンテンツ
-- design → 糸長担当
+# 開発環境
+- バックエンド：Flask
+- フロント：html5,css3,javascript
