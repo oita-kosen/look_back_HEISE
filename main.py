@@ -14,6 +14,7 @@ app.config['MQTT_TLS_ENABLED'] = False
 #app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
 
 mqtt = Mqtt(app)
+
 socketio = SocketIO(app)
 
 url_news = 'https://script.google.com/macros/s/AKfycbykUsL_lHUS2P6i04ONhzS5O0_qonjCPui1SSFFdwe6X-2QEbA/exec'
