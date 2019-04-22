@@ -39,6 +39,7 @@ def handle_connect(client, userdata, flags, rc):
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     #mqtt.publish('device/sensor', 'message income')
+    mqtt.publish('log', 'hello world!')
     data = dict(
         topic=message.topic,
         payload=message.payload.decode()
