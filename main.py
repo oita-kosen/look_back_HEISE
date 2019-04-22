@@ -40,13 +40,14 @@ def handle_connect(client, userdata, flags, rc):
 def handle_mqtt_message(client, userdata, message):
     #mqtt.publish('device/sensor', 'message income')
     mqtt.publish('log', 'message income!')
-    data = dict(
-        topic=message.topic,
-        payload=message.payload.decode()
-    )
-    response_news = requests.get(url_news)
-    data = response_news.json()
-    emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': 'MQTT test'}, broadcast=True, namespace='/test')
+    #data = dict(
+    #    topic=message.topic,
+    #    payload=message.payload.decode()
+    #)
+    #response_news = requests.get(url_news)
+    #data = response_news.json()
+    #emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': 'MQTT test'}, broadcast=True, namespace='/test')
+    emit('my_content', {'title': 'MQTT', 'url': 'mqtt','date': 'mqtt', 'img': 'mqtt','genre': 'MQTT test'}, broadcast=True, namespace='/test')
     mqtt.publish('log', 'emit!')
 
 if __name__ == '__main__':
