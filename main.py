@@ -48,7 +48,7 @@ def handle_mqtt_message(client, userdata, message):
     # response_news = requests.get(url_news)
     # data = response_news.json()
 
-    socketio.emit('my_content', {'title': 'MQTT', 'url': '','date': 'mqtt', 'img': 'mqtt','genre': 'mqtt'}, broadcast=True, namespace='/test')
+    socketio.emit('my_content', {'title': 'MQTT', 'url': 'mqtt','date': 'mqtt', 'img': 'mqtt','genre': 'mqtt'}, broadcast=True, namespace='/test')
     #socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, namespace='/test')
     mqtt.publish('log', 'emit!')
 
