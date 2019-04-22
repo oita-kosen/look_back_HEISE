@@ -98,3 +98,14 @@ h1.heading {
   font-weight:600;
   text-transform: uppercase
 }
+.font12{
+    font-size: 12px;
+    color: gray;
+}
+.t12{
+    table-layout: auto;
+    border: none;
+}
+.table-title{
+    text-align: right;
+}
