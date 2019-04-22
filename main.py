@@ -34,6 +34,10 @@ def send_content(sent_data):
 def hello():
     return render_template('hello.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @mqtt.on_connect()
 def handle_connect(client, userdata, flags, rc):
     mqtt.subscribe('device/sensor')
