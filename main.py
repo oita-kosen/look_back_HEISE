@@ -1,7 +1,10 @@
+import eventlet
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 import requests
+
+eventlet.monkey_patch()
 
 app = Flask(__name__)
 app.config['MQTT_BROKER_URL'] = 'm16.cloudmqtt.com'
