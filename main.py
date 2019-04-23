@@ -25,11 +25,18 @@ url_twitter = 'https://script.google.com/macros/s/AKfycbzOmzIjzfwHqVpaUbgNcbm8tV
 
 @socketio.on('my_broadcast_event', namespace='/test')
 def send_content(sent_data):
-    #content = sent_data['data']
-    #content2 = sent_data['data2']
-    response_news = requests.get(url_news)
-    data = response_news.json()
-    emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
+    content = sent_data['event']
+
+    if content == 'news':
+        response_news = requests.get(url_news)
+        data = response_news.json()
+        emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
+
+    elif content == 'twitter':
+        response_news = requests.get(url_twitter)
+        data = response_news.json()
+        emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
+
 
 @app.route('/')
 def hello():
