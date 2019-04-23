@@ -26,6 +26,7 @@ url_twitter = 'https://script.google.com/macros/s/AKfycbzOmzIjzfwHqVpaUbgNcbm8tV
 @socketio.on('my_broadcast_event', namespace='/test')
 def send_content(sent_data):
     content = sent_data['event']
+    print(content)
 
     if content == 'news':
         response_news = requests.get(url_news)
