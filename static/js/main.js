@@ -15,7 +15,7 @@ $(document).ready(function() {
         console.log("port" + ':' + location.port);
         return false;
     });
-    $('form#Twitter').submit(function(event) {
+    $('form#twitter').submit(function(event) {
         socket.emit('my_broadcast_event',{event:"twitter"});
         console.log("protocol" + ':' + location.protocol);
         console.log("domain" + ':' + document.domain);
