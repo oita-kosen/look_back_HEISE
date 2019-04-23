@@ -45,19 +45,27 @@ def handle_connect(client, userdata, flags, rc):
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
-    #mqtt.publish('device/sensor', 'message income')
     mqtt.publish('log', 'message income!')
-
-    # data = dict(
+    #data = dict(
     #     topic=message.topic,
     #     payload=message.payload.decode()
-    # )
+    #)
 
     response_news = requests.get(url_news)
     data = response_news.json()
 
-    #socketio.emit('my_content', {'title': 'MQTT', 'url': 'mqtt','date': 'mqtt', 'img': 'mqtt','genre': 'mqtt'}, namespace='/test')
-    socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt'}, namespace='/test')
+    if message.payload.decode() == 'left':   #左向いた時
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (L)'},
+                      namespace='/test')
+
+    elif message.payload.decode() == 'right':   #右を向いた時
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (R)'},
+                      namespace='/test')
+
+    else:                                     #それ以外
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt ({})'.format(message.payload.decode())},
+                      namespace='/test')
+
     mqtt.publish('log', 'emit!')
 
 if __name__ == '__main__':
