@@ -9,7 +9,14 @@ $(document).ready(function() {
 
     //htmlのフォームがsubmitされた時に、main.pyのreceive_content宛にテキストエリアのid="input_data"の値を送信します。
     $('form#broadcast').submit(function(event) {
-        socket.emit('my_broadcast_event',{data:"submit"});
+        socket.emit('my_broadcast_event',{event:"news"});
+        console.log("protocol" + ':' + location.protocol);
+        console.log("domain" + ':' + document.domain);
+        console.log("port" + ':' + location.port);
+        return false;
+    });
+    $('form#Twitter').submit(function(event) {
+        socket.emit('my_broadcast_event',{event:"twitter"});
         console.log("protocol" + ':' + location.protocol);
         console.log("domain" + ':' + document.domain);
         console.log("port" + ':' + location.port);
