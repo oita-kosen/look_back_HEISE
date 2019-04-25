@@ -4,4 +4,3 @@ gunicorn==19.9.0
 eventlet
 flask-mqtt
 requests
-gevent
