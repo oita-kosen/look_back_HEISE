@@ -33,6 +33,11 @@ def send_content(sent_data):
     content = sent_data['event']
     print(content)
 
+    if response_news is None:
+        response_news = requests.get(url_news)
+    if response_twitter is None:
+        response_twitter = requests.get(url_twitter)
+
     if content == 'news':
         data = response_news.json()
         emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
@@ -69,6 +74,11 @@ def handle_mqtt_message(client, userdata, message):
     #     payload=message.payload.decode()
     #)
 
+    if response_news is None:
+        response_news = requests.get(url_news)
+    if response_twitter is None:
+        response_twitter = requests.get(url_twitter)
+
     if message.payload.decode() == 'left':  #左向いた時
         data = response_twitter.json()
         socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (L)'},
@@ -92,6 +102,4 @@ def handle_mqtt_message(client, userdata, message):
 
 
 if __name__ == '__main__':
-    response_news = requests.get(url_news)
-    response_twitter = requests.get(url_twitter)
     socketio.run(app)
