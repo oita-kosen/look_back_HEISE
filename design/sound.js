@@ -1,7 +1,8 @@
 var audioElem;
 function PlaySound() {
     audioElem = new Audio();
-    audioElem.src = "/static/music/text-impact.mp3";
+    audioElem.src = "./text-impact.mp3";
+    audioElem.volume = 0.2;
     audioElem.play();
 }
 function StopSound(){

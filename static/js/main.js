@@ -70,6 +70,7 @@ var audioElem;
 function PlaySound() {
     audioElem = new Audio();
     audioElem.src = "/static/sound/text-impact.mp3";
+    audioElem.volume = 0.2;
     audioElem.play();
 }
 function StopSound(){
