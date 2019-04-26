@@ -3,7 +3,7 @@ $(document).ready(function() {
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
     var count = 0;
-	var maxcards = 6;
+	var maxcards = 2;
 	var flag = 0;
     //テキストエリアはこちらで受信。main.py側からmy_content宛に送られたデータを受け取る
     socket.on('my_content', function(msg) {
