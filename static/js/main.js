@@ -69,7 +69,7 @@ $(document).ready(function() {
 var audioElem;
 function PlaySound() {
     audioElem = new Audio();
-    audioElem.src = "/static/music/text-impact.mp3";
+    audioElem.src = "/static/sound/text-impact.mp3";
     audioElem.play();
 }
 function StopSound(){
