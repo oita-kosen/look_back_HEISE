@@ -54,6 +54,7 @@ def about():
 
 @mqtt.on_connect()
 def handle_connect(client, userdata, flags, rc):
+    print('handle_connect_now')
     mqtt.subscribe('device/sensor')
     mqtt.publish('device/sensor', 'hello world!')
 
@@ -61,6 +62,7 @@ def handle_connect(client, userdata, flags, rc):
 def handle_mqtt_message(client, userdata, message):
     global response_news
     global response_twitter
+    print('on_message_now')
     mqtt.publish('log', 'message income!')
     #data = dict(
     #     topic=message.topic,
