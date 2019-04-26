@@ -109,3 +109,25 @@ h1.heading {
 .table-title{
     text-align: right;
 }
+.disnone{
+  display: none;
+}
+
+.btn-circle-border-simple {
+  display: inline-block;
+  text-decoration: none;
+  color: #007bff;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  border-radius: 50%;
+  border: solid 2px #007bff;
+  text-align: center;
+  overflow: hidden;
+  transition: .4s;
+  margin:0 auto;
+}
+
+.btn-circle-border-simple:hover {
+  background: #b3e1ff;
+}
