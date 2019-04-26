@@ -2,6 +2,9 @@ $(document).ready(function() {
     namespace = '/test'; //main.pyで指定したnamespace
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
+    var count = 0;
+	var maxcards = 6;
+	var flag = 0;
     //テキストエリアはこちらで受信。main.py側からmy_content宛に送られたデータを受け取る
     socket.on('my_content', function(msg) {
         var title = msg.title;
