@@ -2,7 +2,7 @@ $(document).ready(function() {
 
 	//htmlのフォームがsubmitされた時に、main.pyのreceive_content宛にテキストエリアのid="input_data"の値を送信します。
 	var count = 0;
-	var maxcards = 6;
+	var maxcards = 2;
 	var flag = 0;
 	$('form#broadcast').submit(function(event) {
 		var arr = $('.card').length;
