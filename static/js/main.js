@@ -14,6 +14,7 @@ $(document).ready(function() {
             title = title.substring(0,count);
             title += '...';
         }
+        PlaySound();
         $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card"><a class="img-card" href="'+msg.url+'" target="_blank"><img src="'+msg.img+'" /></a><div class="card-content"><h4 class="card-title"><a href="'+msg.url+'" target="_blank">' + title + '</a></h4><table  class="t12 font12"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+msg.genre+'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">'+msg.date+'</td></tr></table></div><div class="card-read-more"><a href="'+msg.url+'" class="btn btn-link btn-block" target="_blank">Read More</a></div></div></div>'); // <div id="place"></div>内に、受け取ったdataを挿入します。
         $('.card').each(function(){
 			var index =$('.card').index(this); //何番目か
@@ -64,3 +65,13 @@ $(document).ready(function() {
 		});
 	});
 });
+
+var audioElem;
+function PlaySound() {
+    audioElem = new Audio();
+    audioElem.src = "/static/music/text-impact.mp3";
+    audioElem.play();
+}
+function StopSound(){
+    audioElem.pause();
+}
