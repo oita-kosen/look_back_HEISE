@@ -22,8 +22,8 @@ socketio = SocketIO(app)
 
 url_news = 'https://script.google.com/macros/s/AKfycbykUsL_lHUS2P6i04ONhzS5O0_qonjCPui1SSFFdwe6X-2QEbA/exec'
 url_twitter = 'https://script.google.com/macros/s/AKfycbzOmzIjzfwHqVpaUbgNcbm8tVjC9D1p_YwO8_4s/exec'
-response_news = requests.get(url_news)
-response_twitter = requests.get(url_twitter)
+response_news = None
+response_twitter = None
 
 
 @socketio.on('my_broadcast_event', namespace='/test')
@@ -89,5 +89,9 @@ def handle_mqtt_message(client, userdata, message):
 
     mqtt.publish('log', 'emit!')
 
+
+
 if __name__ == '__main__':
+    response_news = requests.get(url_news)
+    response_twitter = requests.get(url_twitter)
     socketio.run(app)
