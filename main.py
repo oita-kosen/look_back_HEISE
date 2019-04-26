@@ -73,7 +73,7 @@ def handle_mqtt_message(client, userdata, message):
         socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (R)'},
                       namespace='/test')
 
-    else:　　　　　　　　　　　　　　　　　　　　　　#それ以外
+    else:#それ以外
         response_news = requests.get(url_news)
         data = response_news.json()
         socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt ({})'.format(message.payload.decode())},
