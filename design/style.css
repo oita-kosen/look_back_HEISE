@@ -129,5 +129,7 @@ h1.heading {
 }
 
 .btn-circle-border-simple:hover {
-  background: #b3e1ff;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
 }
