@@ -22,6 +22,9 @@ socketio = SocketIO(app)
 
 url_news = 'https://script.google.com/macros/s/AKfycbykUsL_lHUS2P6i04ONhzS5O0_qonjCPui1SSFFdwe6X-2QEbA/exec'
 url_twitter = 'https://script.google.com/macros/s/AKfycbzOmzIjzfwHqVpaUbgNcbm8tVjC9D1p_YwO8_4s/exec'
+response_news = requests.get(url_news)
+response_twitter = requests.get(url_twitter)
+
 
 @socketio.on('my_broadcast_event', namespace='/test')
 def send_content(sent_data):
@@ -29,14 +32,16 @@ def send_content(sent_data):
     print(content)
 
     if content == 'news':
-        response_news = requests.get(url_news)
+        global response_news
         data = response_news.json()
         emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
+        response_news = requests.get(url_news)
 
     elif content == 'twitter':
-        response_news = requests.get(url_twitter)
-        data = response_news.json()
+        global response_twitter
+        data = response_twitter.json()
         emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
+        response_twitter = requests.get(url_twitter)
 
 
 @app.route('/')
@@ -60,24 +65,26 @@ def handle_mqtt_message(client, userdata, message):
     #     payload=message.payload.decode()
     #)
 
-
     if message.payload.decode() == 'left':  #左向いた時
-        response_news = requests.get(url_twitter)
-        data = response_news.json()
+        global response_twitter
+        data = response_twitter.json()
         socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (L)'},
                       namespace='/test')
+        response_twitter = requests.get(url_twitter)
 
     elif message.payload.decode() == 'right':   #右向いたとき
-        response_news = requests.get(url_news)
+        global response_news
         data = response_news.json()
         socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (R)'},
                       namespace='/test')
+        response_news = requests.get(url_news)
 
     else:#それ以外
-        response_news = requests.get(url_news)
+        global response_news
         data = response_news.json()
         socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt ({})'.format(message.payload.decode())},
                       namespace='/test')
+        response_news = requests.get(url_news)
 
     mqtt.publish('log', 'emit!')
 
