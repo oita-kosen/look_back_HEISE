@@ -12,6 +12,15 @@ $(document).ready(function() {
             title += '...';
         }
         $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card"><a class="img-card" href="'+msg.url+'" target="_blank"><img src="'+msg.img+'" /></a><div class="card-content"><h4 class="card-title"><a href="'+msg.url+'" target="_blank">' + title + '</a></h4><table  class="t12 font12"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+msg.genre+'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">'+msg.date+'</td></tr></table></div><div class="card-read-more"><a href="'+msg.url+'" class="btn btn-link btn-block" target="_blank">Read More</a></div></div></div>'); // <div id="place"></div>内に、受け取ったdataを挿入します。
+        $('.card').each(function(){
+			var index =$('.card').index(this); //何番目か
+			if(flag == 0){
+				if(index >= maxcards){
+					$(this).addClass('disnone');
+					$('.more').removeClass('disnone');
+				}
+			}
+		});
     });
 
     //htmlのフォームがsubmitされた時に、main.pyのreceive_content宛にテキストエリアのid="input_data"の値を送信します。
@@ -29,4 +38,26 @@ $(document).ready(function() {
         console.log("port" + ':' + location.port);
         return false;
     });
+    $('#more').click(function () { 
+		$('.card').each(function(){
+			var index =$('.card').index(this); //何番目か
+			if(index >= maxcards){
+				$(this).removeClass('disnone');
+				$('.more').addClass('disnone');
+				$('.cl').removeClass('disnone');
+				flag = 1;
+			}
+		});
+	});
+	$('#close').click(function () { 
+		$('.card').each(function(){
+			var index =$('.card').index(this); //何番目か
+			if(index >= maxcards){
+				$(this).addClass('disnone');
+				$('.more').removeClass('disnone');
+				$('.cl').addClass('disnone');
+				flag = 0;
+			}
+		});
+	});
 });
