@@ -3,6 +3,7 @@ $(document).ready(function() {
 	//htmlのフォームがsubmitされた時に、main.pyのreceive_content宛にテキストエリアのid="input_data"の値を送信します。
 	var count = 0;
 	var maxcards = 6;
+	var flag = 0;
 	$('form#broadcast').submit(function(event) {
 		var arr = $('.card').length;
 		console.log(arr);
@@ -11,9 +12,11 @@ $(document).ready(function() {
 
 		$('.card').each(function(){
 			var index =$('.card').index(this); //何番目か
-			if(index >= maxcards){
-				$(this).addClass('disnone');
-				$('.more').removeClass('disnone');
+			if(flag == 0){
+				if(index >= maxcards){
+					$(this).addClass('disnone');
+					$('.more').removeClass('disnone');
+				}
 			}
 		});
 	});
@@ -24,6 +27,7 @@ $(document).ready(function() {
 				$(this).removeClass('disnone');
 				$('.more').addClass('disnone');
 				$('.cl').removeClass('disnone');
+				flag = 1;
 			}
 		});
 	});
@@ -34,6 +38,7 @@ $(document).ready(function() {
 				$(this).addClass('disnone');
 				$('.more').removeClass('disnone');
 				$('.cl').addClass('disnone');
+				flag = 0;
 			}
 		});
 	});
