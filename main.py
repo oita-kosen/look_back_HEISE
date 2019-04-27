@@ -20,6 +20,11 @@ mqtt = Mqtt(app)
 
 socketio = SocketIO(app)
 
+'''
+1が昔の記事とtwitter
+2が最近の記事とtwitter
+'''
+
 url_news_1 = 'https://script.google.com/macros/s/AKfycbyRJa4dBEUJjbz9wf5fkUS1vH7yzXtuOvLfH9g0mSm03DZhYBU/exec'
 url_news_2 = 'https://script.google.com/macros/s/AKfycbxc-TKyZ8Lp-9Ed05et_wIGw55RLGBGwhNSY2lb2z9iQdy1wLs/exec'
 url_twitter_1 = 'https://script.google.com/macros/s/AKfycbwxttO7TuSOH45BnlHraDtam91MlBdLrREwl_nHFxwpOACC300/exec'
