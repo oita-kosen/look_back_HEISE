@@ -29,10 +29,13 @@ url_news_1 = 'https://script.google.com/macros/s/AKfycbyRJa4dBEUJjbz9wf5fkUS1vH7
 url_news_2 = 'https://script.google.com/macros/s/AKfycbxc-TKyZ8Lp-9Ed05et_wIGw55RLGBGwhNSY2lb2z9iQdy1wLs/exec'
 url_twitter_1 = 'https://script.google.com/macros/s/AKfycbwxttO7TuSOH45BnlHraDtam91MlBdLrREwl_nHFxwpOACC300/exec'
 url_twitter_2 = 'https://script.google.com/macros/s/AKfycbyhR8HyQKcf2b9wRUmsCm-6D_EK1zFlJzIpPIhrBuRd49FVFtpT/exec'
+url_turn = 'https://script.google.com/macros/s/AKfycbzBg6CQ_1MCkuFGd3IMzvXw4vDL0v8I5F6VxWq1nYgp63ew44JA/exec'
+
 response_news_1 = None
 response_twitter_1 = None
 response_news_2 = None
 response_twitter_2 = None
+response_reiwa = None
 
 
 @socketio.on('my_broadcast_event', namespace='/test')
@@ -41,6 +44,7 @@ def send_content(sent_data):
     global response_twitter_1
     global response_news_2
     global response_twitter_2
+    global response_reiwa
     content = sent_data['event']
     print(content)
 
@@ -52,6 +56,8 @@ def send_content(sent_data):
         response_news_2 = requests.get(url_news_2)
     if response_twitter_2 is None:
         response_twitter_2 = requests.get(url_twitter_2)
+    if response_reiwa is None:
+        response_reiwa = requests.get(url_turn)
 
     if content == 'news':
         data = response_news_1.json()
@@ -62,6 +68,11 @@ def send_content(sent_data):
         data = response_twitter_1.json()
         emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
         response_twitter_1 = requests.get(url_twitter_1)
+
+    elif content == 'reiwa':
+        data = response_reiwa.json()
+        emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
+        response_reiwa = requests.get(url_turn)
 
 
 @app.route('/')
@@ -84,13 +95,13 @@ def handle_mqtt_message(client, userdata, message):
     global response_twitter_1
     global response_news_2
     global response_twitter_2
+    global response_reiwa
     print('on_message_now')
     mqtt.publish('log', 'message income!')
     #data = dict(
     #     topic=message.topic,
     #     payload=message.payload.decode()
     #)
-
     if response_news_1 is None:
         response_news_1 = requests.get(url_news_1)
     if response_twitter_1 is None:
@@ -99,6 +110,8 @@ def handle_mqtt_message(client, userdata, message):
         response_news_2 = requests.get(url_news_2)
     if response_twitter_2 is None:
         response_twitter_2 = requests.get(url_twitter_2)
+    if response_reiwa is None:
+        response_reiwa = requests.get(url_turn)
 
     if message.payload.decode() == '+1':  #右向いた時（遅い時）
         data = response_twitter_1.json()
@@ -123,6 +136,12 @@ def handle_mqtt_message(client, userdata, message):
         socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (L_fast)'},
                       namespace='/test')
         response_news_2 = requests.get(url_news_2)
+
+    elif message.payload.decode() == 'turn':   #一回転したとき
+        data = response_reiwa.json()
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (L_fast)'},
+                      namespace='/test')
+        response_reiwa = requests.get(url_news_2)
 
     else:#それ以外
         data = response_news_1.json()
