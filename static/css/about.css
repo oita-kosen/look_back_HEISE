@@ -1,0 +1,10 @@
+.portfolio-max-width
+{
+  max-width: 900px;
+  margin: auto;
+}
+
+.card_padding{
+  padding-left: 50px;
+  padding-top: 20px;
+}
