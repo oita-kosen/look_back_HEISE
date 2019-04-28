@@ -96,8 +96,7 @@ def handle_mqtt_message(client, userdata, message):
     global response_news_2
     global response_twitter_2
     global response_reiwa
-    print('on_message_now')
-    mqtt.publish('log', 'message income!')
+    mqtt.publish('log', f'message income!: {message.payload.decode()}')
     #data = dict(
     #     topic=message.topic,
     #     payload=message.payload.decode()
