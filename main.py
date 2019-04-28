@@ -29,7 +29,7 @@ url_news_1 = 'https://script.google.com/macros/s/AKfycbyRJa4dBEUJjbz9wf5fkUS1vH7
 url_news_2 = 'https://script.google.com/macros/s/AKfycbxc-TKyZ8Lp-9Ed05et_wIGw55RLGBGwhNSY2lb2z9iQdy1wLs/exec'
 url_twitter_1 = 'https://script.google.com/macros/s/AKfycbwxttO7TuSOH45BnlHraDtam91MlBdLrREwl_nHFxwpOACC300/exec'
 url_twitter_2 = 'https://script.google.com/macros/s/AKfycbyhR8HyQKcf2b9wRUmsCm-6D_EK1zFlJzIpPIhrBuRd49FVFtpT/exec'
-url_turn = 'https://script.google.com/macros/s/AKfycbzBg6CQ_1MCkuFGd3IMzvXw4vDL0v8I5F6VxWq1nYgp63ew44JA/exec'
+url_reiwa = 'https://script.google.com/macros/s/AKfycbzBg6CQ_1MCkuFGd3IMzvXw4vDL0v8I5F6VxWq1nYgp63ew44JA/exec'
 
 response_news_1 = None
 response_twitter_1 = None
@@ -57,7 +57,7 @@ def send_content(sent_data):
     if response_twitter_2 is None:
         response_twitter_2 = requests.get(url_twitter_2)
     if response_reiwa is None:
-        response_reiwa = requests.get(url_turn)
+        response_reiwa = requests.get(url_reiwa)
 
     if content == 'news':
         data = response_news_1.json()
@@ -72,7 +72,7 @@ def send_content(sent_data):
     elif content == 'reiwa':
         data = response_reiwa.json()
         emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
-        response_reiwa = requests.get(url_turn)
+        response_reiwa = requests.get(url_reiwa)
 
 
 @app.route('/')
@@ -110,7 +110,7 @@ def handle_mqtt_message(client, userdata, message):
     if response_twitter_2 is None:
         response_twitter_2 = requests.get(url_twitter_2)
     if response_reiwa is None:
-        response_reiwa = requests.get(url_turn)
+        response_reiwa = requests.get(url_reiwa)
 
     if message.payload.decode() == '+1':  #右向いた時（遅い時）
         data = response_twitter_1.json()
@@ -140,7 +140,7 @@ def handle_mqtt_message(client, userdata, message):
         data = response_reiwa.json()
         socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (L_fast)'},
                       namespace='/test')
-        response_reiwa = requests.get(url_news_2)
+        response_reiwa = requests.get(url_reiwa)
 
     else:#それ以外
         data = response_news_1.json()
