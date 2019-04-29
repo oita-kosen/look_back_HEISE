@@ -2,27 +2,48 @@ $(document).ready(function() {
     namespace = '/test'; //main.pyで指定したnamespace
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
-    var count = 0;
+    var letter_count = 30;
+    var card_count = 0;
 	var maxcards = 3;
 	var flag = 0;
     //テキストエリアはこちらで受信。main.py側からmy_content宛に送られたデータを受け取る
     socket.on('my_content', function(msg) {
         var title = msg.title;
-        var count = 30;
+        //var letter_count = 30;
         var length = title.length;
-        if(length > count){
-            title = title.substring(0,count);
+        if(length > letter_count){
+            title = title.substring(0,letter_count);
             title += '...';
         }
         PlaySound();
+
+        card_count++;
         if(msg.genre.match('twitter')){
-            $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card twitter_card"><a class="img-card" href="'+ msg.url +'" target="_blank"><img src="'+msg.img+'" /></a><div class="card-content"><h4 class="card-title"><a href="'+ msg.url +'" target="_blank">' + title + '</a></h4><table  class="t12 font12"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+ msg.genre +'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">'+ msg.date +'</td></tr></table></div><div class="card-read-more"><a href="'+ msg.url +'" class="btn btn-link btn-block" target="_blank">Read More</a></div></div></div>'); 
+            $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card twitter_card id=card_'+card_count+'"><a class="img-card" href="'+ msg.url +'" target="_blank"><img src="'+msg.img+'" /></a><div class="card-content"><h4 class="card-title"><a href="'+ msg.url +'" target="_blank">' + title + '</a></h4><table  class="t12 font12"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+ msg.genre +'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">'+ msg.date +'</td></tr></table></div><div class="card-read-more"><a href="'+ msg.url +'" class="btn btn-link btn-block" target="_blank">Read More</a></div></div></div>'); 
         }else if(msg.genre.match("これから")){
-            $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card reiwa_card"><a class="img-card" href="'+ msg.url +'" target="_blank"><img src="'+msg.img+'" /></a><div class="card-content"><h4 class="card-title reiwa"><a href="'+ msg.url +'" target="_blank">' + title + '</a></h4><table  class="t12 font12_reiwa"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+ msg.genre +'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">'+ msg.date +'</td></tr></table></div><div class="card-read-more"><a href="'+ msg.url +'" class="btn btn-link btn-block reiwa" target="_blank">Read More</a></div></div></div>');
+            $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card reiwa_card id=card_'+card_count+'"><a class="img-card" href="'+ msg.url +'" target="_blank"><img src="'+msg.img+'" /></a><div class="card-content"><h4 class="card-title reiwa"><a href="'+ msg.url +'" target="_blank">' + title + '</a></h4><table  class="t12 font12_reiwa"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+ msg.genre +'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">'+ msg.date +'</td></tr></table></div><div class="card-read-more"><a href="'+ msg.url +'" class="btn btn-link btn-block reiwa" target="_blank">Read More</a></div></div></div>');
         }
         else{
-            $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card"><a class="img-card" href="'+ msg.url +'" target="_blank"><img src="'+msg.img+'" /></a><div class="card-content"><h4 class="card-title"><a href="'+ msg.url +'" target="_blank">' + title + '</a></h4><table  class="t12 font12"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+ msg.genre +'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">'+ msg.date +'</td></tr></table></div><div class="card-read-more"><a href="'+ msg.url +'" class="btn btn-link btn-block" target="_blank">Read More</a></div></div></div>'); 
+            $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card id=card_'+card_count+'"><a class="img-card" href="'+ msg.url +'" target="_blank"><img src="'+msg.img+'" /></a><div class="card-content"><h4 class="card-title"><a href="'+ msg.url +'" target="_blank">' + title + '</a></h4><table  class="t12 font12"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+ msg.genre +'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">'+ msg.date +'</td></tr></table></div><div class="card-read-more"><a href="'+ msg.url +'" class="btn btn-link btn-block" target="_blank">Read More</a></div></div></div>'); 
         }
+
+        var fadein_id = '#card_'+card_count;
+		var anim = anime.timeline();
+		anim.add({
+			targets: fadein_id,
+			translateX: -400,
+			duration: 0
+		});
+
+		anim.add({
+			targets: fadein_id,
+			translateX: 0,
+			duration: 300,
+			loop: false,
+			direction: 'alternate',
+			easing: 'easeOutElastic(1, 0.8)'
+        });
+
         $('.card').each(function(){
 			var index =$('.card').index(this); //何番目か
 			if(flag == 0){
