@@ -8,3 +8,22 @@
   padding-left: 50px;
   padding-top: 20px;
 }
+
+.head_padding{
+  padding: 8px 16px;
+}
+
+.title_font{
+  font-size: 20px;
+  padding: 5px 0px;
+  margin: 0px 16px 0px 0px;
+}
+
+.link_font{
+  font-size: 16px;
+  padding: 8px 8px;
+}
+
+.html_font{
+  font-size: 16px
+}
