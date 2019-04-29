@@ -8,7 +8,24 @@ $(document).ready(function() {
 		var arr = $('.card').length;
 		console.log(arr);
 		count++;
-        $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card"><a class="img-card" href="https://ja.wikipedia.org/wiki/%E5%B9%B3%E6%88%90"><img src="./images/heisei.jpg" /></a><div class="card-content"><h4 class="card-title"><a href="https://ja.wikipedia.org/wiki/%E5%B9%B3%E6%88%90"> 平成の振り返り</a></h4><table  class="t12 font12"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+count+'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">1998/03/22</td></tr></table></div><div class="card-read-more"><a href="https://ja.wikipedia.org/wiki/%E5%B9%B3%E6%88%90" class="btn btn-link btn-block">Read More</a></div></div></div>');
+        $(".row").prepend('<div class="col-xs-12 col-sm-4"><div class="card" id=card_'+count+'><a class="img-card" href="https://ja.wikipedia.org/wiki/%E5%B9%B3%E6%88%90"><img src="./images/heisei.jpg" /></a><div class="card-content"><h4 class="card-title"><a href="https://ja.wikipedia.org/wiki/%E5%B9%B3%E6%88%90"> 平成の振り返り</a></h4><table  class="t12 font12"><tr><td class="table-title">ジャンル</td><td>：</td><td class="genre">'+count+'</td></tr><tr><td class="table-title">日付</td><td>：</td><td class="date">1998/03/22</td></tr></table></div><div class="card-read-more"><a href="https://ja.wikipedia.org/wiki/%E5%B9%B3%E6%88%90" class="btn btn-link btn-block">Read More</a></div></div></div>');
+
+		var fadein_id = '#card_'+count;
+		var anim = anime.timeline();
+		anim.add({
+			targets: fadein_id,
+			translateX: -400,
+			duration: 0
+		});
+
+		anim.add({
+			targets: fadein_id,
+			translateX: 0,
+			duration: 300,
+			loop: false,
+			direction: 'alternate',
+			easing: 'easeOutElastic(1, 0.8)'
+		});
 
 		$('.card').each(function(){
 			var index =$('.card').index(this); //何番目か
@@ -20,6 +37,7 @@ $(document).ready(function() {
 			}
 		});
 	});
+
 	$('#more').click(function () { 
 		$('.card').each(function(){
 			var index =$('.card').index(this); //何番目か
