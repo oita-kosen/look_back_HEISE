@@ -115,6 +115,15 @@ $(document).ready(function() {
         $('body,html').animate({
             scrollTop: 0
         }, 300);
+        $('.card').each(function(){
+			var index =$('.card').index(this); //何番目か
+			if(index >= maxcards){
+				$(this).addClass('disnone');
+				$('.more').removeClass('disnone');
+				$('.cl').addClass('disnone');
+				flag = 0;
+			}
+		});
         return false;
     });
 });
