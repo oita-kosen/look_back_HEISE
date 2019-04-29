@@ -15,7 +15,7 @@ $(document).ready(function() {
             title = title.substring(0,letter_count);
             title += '...';
         }
-        PlaySound();
+        sound();
 
         card_count++;
         if(msg.genre.match('twitter')){
@@ -114,16 +114,17 @@ $(document).ready(function() {
     TopBtn.click(function() {
         $('body,html').animate({
             scrollTop: 0
-        }, 300);
-        $('.card').each(function(){
-			var index =$('.card').index(this); //何番目か
-			if(index >= maxcards){
-				$(this).addClass('disnone');
-				$('.more').removeClass('disnone');
-				$('.cl').addClass('disnone');
-				flag = 0;
-			}
-		});
+        }, 300,function(){
+            $('.card').each(function(){
+                var index =$('.card').index(this); //何番目か
+                if(index >= maxcards){
+                    $(this).addClass('disnone');
+                    $('.more').removeClass('disnone');
+                    $('.cl').addClass('disnone');
+                    flag = 0;
+                }
+            })
+        });
         return false;
     });
 });
@@ -137,4 +138,10 @@ function PlaySound() {
 }
 function StopSound(){
     audioElem.pause();
+}
+
+function sound() {
+    var sound = new Howl({ src: ['/static/sound/text-impact.mp3'] });
+    sound.play();
+
 }
