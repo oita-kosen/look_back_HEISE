@@ -139,6 +139,19 @@ h1.heading {
   background-color: #eaf6fd;
 }
 
-.future_card{
-  background-color: #82aaaa;
+.reiwa_card{
+  background-image: url('./static/images/hightech.jpg');
+}
+
+.font12_reiwa{
+  font-size: 12px;
+  color: white;
+}
+
+.reiwa a{
+  color:white;
+}
+
+.btn.reiwa {
+  color: white;
 }
