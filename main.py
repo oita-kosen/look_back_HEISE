@@ -138,7 +138,7 @@ def handle_mqtt_message(client, userdata, message):
 
     elif message.payload.decode() == 'turn':   #一回転したとき
         data = response_reiwa.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (L_fast)'},
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' by mqtt (Turn)'},
                       namespace='/test')
         response_reiwa = requests.get(url_reiwa)
 
