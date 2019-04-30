@@ -114,31 +114,31 @@ def handle_mqtt_message(client, userdata, message):
 
     if message.payload.decode() == '+1':  #右向いた時（遅い時）
         data = response_twitter_1.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']},
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (slow)'},
                       namespace='/test')
         response_twitter_1 = requests.get(url_twitter_1)
 
     elif message.payload.decode() == '+2':   #右向いた時（早い時）
         data = response_twitter_2.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']},
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (fast)'},
                       namespace='/test')
         response_twitter_2 = requests.get(url_twitter_2)
 
     elif message.payload.decode() == '-1':   #左向いた時（遅い時）
         data = response_news_1.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']},
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (slow)'},
                       namespace='/test')
         response_news_1 = requests.get(url_news_1)
 
     elif message.payload.decode() == '-2':   #左向いた時（早い時）
         data = response_news_2.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']},
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (fast)'},
                       namespace='/test')
         response_news_2 = requests.get(url_news_2)
 
     elif message.payload.decode() == 'turn':   #一回転したとき
         data = response_reiwa.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']},
+        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (turn)'},
                       namespace='/test')
         response_reiwa = requests.get(url_reiwa)
 
