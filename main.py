@@ -29,6 +29,7 @@ class StockData:
         'reiwa': 'https://script.google.com/macros/s/AKfycbzBg6CQ_1MCkuFGd3IMzvXw4vDL0v8I5F6VxWq1nYgp63ew44JA/exec',
     }
     data = {}
+
     def __init__(self):
         if len(StockData.data) == 0:
             StockData.data = dict(zip(self.url.keys(), [None]*len(self.url)))
@@ -42,7 +43,7 @@ class StockData:
         return
 
     @classmethod
-    def get(cls, key):
+    def pop(cls, key):
         cls.store()
         data, cls.data[key] = cls.data[key], None
         return data
@@ -56,6 +57,12 @@ def hello():
 def about():
     return render_template('about.html')
 
+@mqtt.on_connect()
+def handle_connect(client, userdata, flags, rc):
+    print('handle_connect_now')
+    mqtt.subscribe('device/sensor')
+    mqtt.publish('device/sensor', 'handle_connect!')
+    return
 
 @socketio.on('my_broadcast_event', namespace='/test')
 def send_content(sent_data):
@@ -65,18 +72,10 @@ def send_content(sent_data):
         'reiwa': 'reiwa',
     }
     content = sent_data['event']
-    data = send_content.data.get(content2key[content])
-    socketio.emit('my_content', data, namespace='/test', broadcast=True)
-    send_content.data.store()
-    return
-send_content.data = StockData()
 
-
-@mqtt.on_connect()
-def handle_connect(client, userdata, flags, rc):
-    print('handle_connect_now')
-    mqtt.subscribe('device/sensor')
-    mqtt.publish('device/sensor', 'hello world!')
+    data = stock_data.pop(content2key[content])
+    emit('my_content', data, broadcast=True)
+    stock_data.store()
     return
 
 @mqtt.on_message()
@@ -89,12 +88,12 @@ def handle_mqtt_message(client, userdata, message):
         'turn': 'reiwa',
     }
     content = message.payload.decode()
-    mqtt.publish('log', f'message income!: {content}')
-    data = handle_mqtt_message.data.get(content2key[content])
-    socketio.emit('my_content', data, namespace='/test', broadcast=True)
-    handle_mqtt_message.data.store()
+    mqtt.publish('log', f'handle_mqtt_message: {content}')
+
+    data = stock_data.pop(content2key[content])
+    socketio.emit('my_content', data, namespace='/test')
+    stock_data.store()
     return
-handle_mqtt_message.data = StockData()
 
 
 if __name__ == '__main__':
