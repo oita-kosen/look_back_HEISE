@@ -7,19 +7,6 @@ from flask_socketio import SocketIO, emit
 import requests
 
 
-app = Flask(__name__)
-
-socketio = SocketIO(app)
-
-app.config['MQTT_BROKER_URL'] = 'm16.cloudmqtt.com'
-app.config['MQTT_BROKER_PORT'] = 10145
-app.config['MQTT_USERNAME'] = 'bqntusbe'
-app.config['MQTT_PASSWORD'] = 'FSeMpNi8kNhF'
-app.config['MQTT_KEEPALIVE'] = 5
-app.config['MQTT_TLS_ENABLED'] = False
-mqtt = Mqtt(app)
-
-
 class StockData:
     url = {
         'heisei_old': 'https://script.google.com/macros/s/AKfycbyRJa4dBEUJjbz9wf5fkUS1vH7yzXtuOvLfH9g0mSm03DZhYBU/exec',
@@ -47,6 +34,32 @@ class StockData:
         cls.store()
         data, cls.data[key] = cls.data[key], None
         return data
+
+
+def create_app():
+    app = Flask(__name__)
+    return app
+
+def create_socketio(app):
+    socketio = SocketIO(app)
+    return socketio
+
+def create_mqtt(app):
+    app.config['MQTT_BROKER_URL'] = 'm16.cloudmqtt.com'
+    app.config['MQTT_BROKER_PORT'] = 10145
+    app.config['MQTT_USERNAME'] = 'bqntusbe'
+    app.config['MQTT_PASSWORD'] = 'FSeMpNi8kNhF'
+    app.config['MQTT_KEEPALIVE'] = 5
+    app.config['MQTT_TLS_ENABLED'] = False
+    mqtt = Mqtt(app)
+    return mqtt
+
+
+app = create_app()
+socketio = create_socketio(app)
+mqtt = create_mqtt(app)
+
+stock_data = StockData()
 
 
 @app.route('/')
