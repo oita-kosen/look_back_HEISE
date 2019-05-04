@@ -2,77 +2,50 @@ import eventlet
 eventlet.monkey_patch()
 
 from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
+from flask_socketio import SocketIO, emit
 import requests
 
+
 app = Flask(__name__)
+
+socketio = SocketIO(app)
+
 app.config['MQTT_BROKER_URL'] = 'm16.cloudmqtt.com'
 app.config['MQTT_BROKER_PORT'] = 10145
 app.config['MQTT_USERNAME'] = 'bqntusbe'
 app.config['MQTT_PASSWORD'] = 'FSeMpNi8kNhF'
 app.config['MQTT_KEEPALIVE'] = 5
 app.config['MQTT_TLS_ENABLED'] = False
-#app.config['MQTT_TLS_INSECURE'] = False
-#app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
-
 mqtt = Mqtt(app)
 
-socketio = SocketIO(app)
 
-'''
-1が昔の記事とtwitter
-2が最近の記事とtwitter
-'''
+class StockData:
+    url = {
+        'heisei_old': 'https://script.google.com/macros/s/AKfycbyRJa4dBEUJjbz9wf5fkUS1vH7yzXtuOvLfH9g0mSm03DZhYBU/exec',
+        'heisei_new': 'https://script.google.com/macros/s/AKfycbxc-TKyZ8Lp-9Ed05et_wIGw55RLGBGwhNSY2lb2z9iQdy1wLs/exec',
+        'twitter_old': 'https://script.google.com/macros/s/AKfycbwxttO7TuSOH45BnlHraDtam91MlBdLrREwl_nHFxwpOACC300/exec',
+        'twitter_new': 'https://script.google.com/macros/s/AKfycbyhR8HyQKcf2b9wRUmsCm-6D_EK1zFlJzIpPIhrBuRd49FVFtpT/exec',
+        'reiwa': 'https://script.google.com/macros/s/AKfycbzBg6CQ_1MCkuFGd3IMzvXw4vDL0v8I5F6VxWq1nYgp63ew44JA/exec',
+    }
+    data = {}
+    def __init__(self):
+        if len(StockData.data) == 0:
+            StockData.data = dict(zip(self.url.keys(), [None]*len(self.url)))
+        return
 
-url_news_1 = 'https://script.google.com/macros/s/AKfycbyRJa4dBEUJjbz9wf5fkUS1vH7yzXtuOvLfH9g0mSm03DZhYBU/exec'
-url_news_2 = 'https://script.google.com/macros/s/AKfycbxc-TKyZ8Lp-9Ed05et_wIGw55RLGBGwhNSY2lb2z9iQdy1wLs/exec'
-url_twitter_1 = 'https://script.google.com/macros/s/AKfycbwxttO7TuSOH45BnlHraDtam91MlBdLrREwl_nHFxwpOACC300/exec'
-url_twitter_2 = 'https://script.google.com/macros/s/AKfycbyhR8HyQKcf2b9wRUmsCm-6D_EK1zFlJzIpPIhrBuRd49FVFtpT/exec'
-url_reiwa = 'https://script.google.com/macros/s/AKfycbzBg6CQ_1MCkuFGd3IMzvXw4vDL0v8I5F6VxWq1nYgp63ew44JA/exec'
+    @classmethod
+    def store(cls):
+        for key, data in cls.data.items():
+            if data is None:
+                cls.data[key] = requests.get(cls.url[key]).json()
+        return
 
-response_news_1 = None
-response_twitter_1 = None
-response_news_2 = None
-response_twitter_2 = None
-response_reiwa = None
-
-
-@socketio.on('my_broadcast_event', namespace='/test')
-def send_content(sent_data):
-    global response_news_1
-    global response_twitter_1
-    global response_news_2
-    global response_twitter_2
-    global response_reiwa
-    content = sent_data['event']
-    print(content)
-
-    if response_news_1 is None:
-        response_news_1 = requests.get(url_news_1)
-    if response_twitter_1 is None:
-        response_twitter_1 = requests.get(url_twitter_1)
-    if response_news_2 is None:
-        response_news_2 = requests.get(url_news_2)
-    if response_twitter_2 is None:
-        response_twitter_2 = requests.get(url_twitter_2)
-    if response_reiwa is None:
-        response_reiwa = requests.get(url_reiwa)
-
-    if content == 'news':
-        data = response_news_1.json()
-        emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
-        response_news_1 = requests.get(url_news_1)
-
-    elif content == 'twitter':
-        data = response_twitter_1.json()
-        emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
-        response_twitter_1 = requests.get(url_twitter_1)
-
-    elif content == 'reiwa':
-        data = response_reiwa.json()
-        emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']}, broadcast=True)
-        response_reiwa = requests.get(url_reiwa)
+    @classmethod
+    def get(cls, key):
+        cls.store()
+        data, cls.data[key] = cls.data[key], None
+        return data
 
 
 @app.route('/')
@@ -83,73 +56,45 @@ def hello():
 def about():
     return render_template('about.html')
 
+
+@socketio.on('my_broadcast_event', namespace='/test')
+def send_content(sent_data):
+    content2key = {
+        'news': 'heisei_new',
+        'twitter': 'twitter_new',
+        'reiwa': 'reiwa',
+    }
+    content = sent_data['event']
+    data = send_content.data.get(content2key[content])
+    socketio.emit('my_content', data, namespace='/test', broadcast=True)
+    send_content.data.store()
+    return
+send_content.data = StockData()
+
+
 @mqtt.on_connect()
 def handle_connect(client, userdata, flags, rc):
     print('handle_connect_now')
     mqtt.subscribe('device/sensor')
     mqtt.publish('device/sensor', 'hello world!')
+    return
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
-    global response_news_1
-    global response_twitter_1
-    global response_news_2
-    global response_twitter_2
-    global response_reiwa
-    mqtt.publish('log', f'message income!: {message.payload.decode()}')
-    #data = dict(
-    #     topic=message.topic,
-    #     payload=message.payload.decode()
-    #)
-    if response_news_1 is None:
-        response_news_1 = requests.get(url_news_1)
-    if response_twitter_1 is None:
-        response_twitter_1 = requests.get(url_twitter_1)
-    if response_news_2 is None:
-        response_news_2 = requests.get(url_news_2)
-    if response_twitter_2 is None:
-        response_twitter_2 = requests.get(url_twitter_2)
-    if response_reiwa is None:
-        response_reiwa = requests.get(url_reiwa)
-
-    if message.payload.decode() == '+1':  #右向いた時（遅い時）
-        data = response_twitter_1.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (slow)'},
-                      namespace='/test')
-        response_twitter_1 = requests.get(url_twitter_1)
-
-    elif message.payload.decode() == '+2':   #右向いた時（早い時）
-        data = response_twitter_2.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (fast)'},
-                      namespace='/test')
-        response_twitter_2 = requests.get(url_twitter_2)
-
-    elif message.payload.decode() == '-1':   #左向いた時（遅い時）
-        data = response_news_1.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (slow)'},
-                      namespace='/test')
-        response_news_1 = requests.get(url_news_1)
-
-    elif message.payload.decode() == '-2':   #左向いた時（早い時）
-        data = response_news_2.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (fast)'},
-                      namespace='/test')
-        response_news_2 = requests.get(url_news_2)
-
-    elif message.payload.decode() == 'turn':   #一回転したとき
-        data = response_reiwa.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']+' (turn)'},
-                      namespace='/test')
-        response_reiwa = requests.get(url_reiwa)
-
-    else:#それ以外
-        data = response_news_1.json()
-        socketio.emit('my_content', {'title': data['title'], 'url': data['url'],'date': data['date'], 'img': data['img'],'genre': data['genre']},
-                      namespace='/test')
-        response_news_1 = requests.get(url_news_1)
-
-    mqtt.publish('log', 'emit!')
-
+    content2key = {
+        '+1': 'heisei_old',
+        '+2': 'heisei_new',
+        '-1': 'twitter_old',
+        '-2': 'twitter_new',
+        'turn': 'reiwa',
+    }
+    content = message.payload.decode()
+    mqtt.publish('log', f'message income!: {content}')
+    data = handle_mqtt_message.data.get(content2key[content])
+    socketio.emit('my_content', data, namespace='/test', broadcast=True)
+    handle_mqtt_message.data.store()
+    return
+handle_mqtt_message.data = StockData()
 
 
 if __name__ == '__main__':
