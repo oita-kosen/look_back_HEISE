@@ -71,11 +71,11 @@ def about():
     return render_template('about.html')
 
 @app.route('/helloios')
-def about():
+def helloios():
     return render_template('hello_ios.html')
 
 @app.route('/aboutios')
-def about():
+def aboutios():
     return render_template('about_ios.html')
 
 @mqtt.on_connect()
