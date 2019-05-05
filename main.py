@@ -70,6 +70,14 @@ def hello():
 def about():
     return render_template('about.html')
 
+@app.route('/helloios')
+def about():
+    return render_template('hello_ios.html')
+
+@app.route('/aboutios')
+def about():
+    return render_template('about_ios.html')
+
 @mqtt.on_connect()
 def handle_connect(client, userdata, flags, rc):
     print('handle_connect_now')
